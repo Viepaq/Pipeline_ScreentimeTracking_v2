@@ -11,7 +11,7 @@ struct RequestTimeExtensionView: View {
     @State private var isSubmitting = false
     @State private var showSuccess = false
     
-    let minutesOptions = [1, 5, 15, 30, 60, 120] // 1 min to 2 hours
+    let minutesOptions = [1, 5, 15, 30]
     
     init() {
         // View model is injected via environment object
@@ -54,11 +54,7 @@ struct RequestTimeExtensionView: View {
                     Section(header: Text("Request Extra Time")) {
                         Picker("Minutes", selection: $requestedMinutes) {
                             ForEach(minutesOptions, id: \.self) { minutes in
-                                if minutes < 60 {
-                                    Text("\(minutes) minutes")
-                                } else {
-                                    Text("\(minutes / 60) hour\(minutes / 60 > 1 ? "s" : "")")
-                                }
+                                Text(minutes == 1 ? "1 Minute" : "\(minutes) Minutes")
                             }
                         }
                         .pickerStyle(MenuPickerStyle())

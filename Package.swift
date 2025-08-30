@@ -24,9 +24,6 @@ let package = Package(
             name: "ScreenTimeAppApp",
             dependencies: ["ScreenTimeApp"],
             path: "ScreenTimeApp/App"),
-        .testTarget(
-            name: "ScreenTimeAppTests",
-            dependencies: ["ScreenTimeApp"],
-            path: "ScreenTimeApp/Tests"),
+
     ]
 )

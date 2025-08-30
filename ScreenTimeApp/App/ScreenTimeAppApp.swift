@@ -16,6 +16,7 @@ struct ScreenTimeAppApp: App {
                 .environmentObject(homeViewModel)
                 .environmentObject(groupViewModel)
                 .environmentObject(notificationsManager)
+                .preferredColorScheme(.dark)
         }
     }
 }

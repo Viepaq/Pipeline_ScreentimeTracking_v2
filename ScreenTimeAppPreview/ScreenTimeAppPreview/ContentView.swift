@@ -431,7 +431,32 @@ struct GroupView: View {
                         }
                     }
                     
-
+                    // Members list
+                    List {
+                        
+                        
+                        if !group.members.filter({ $0.status == .pending }).isEmpty {
+                            Section(header: Text("Pending Invitations")) {
+                                ForEach(group.members.filter { $0.status == .pending }) { member in
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(member.username)
+                                                .font(.headline)
+                                            Text(member.email)
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Text("Pending")
+                                            .font(.caption)
+                                            .foregroundColor(.orange)
+                                    }
+                                }
+                            }
+                        }
+                    }
                     .listStyle(InsetGroupedListStyle())
                 } else {
                     // No group yet
@@ -527,10 +552,10 @@ struct GroupView: View {
                         
                         Section(header: Text("Request Extra Time")) {
                             Picker("Minutes", selection: $requestedMinutes) {
-                                Text("15 minutes").tag(15)
-                                Text("30 minutes").tag(30)
-                                Text("60 minutes").tag(60)
-                                Text("120 minutes").tag(120)
+                                Text("1 Minute").tag(1)
+                                Text("5 Minutes").tag(5)
+                                Text("15 Minutes").tag(15)
+                                Text("30 Minutes").tag(30)
                             }
                             .pickerStyle(MenuPickerStyle())
                         }
