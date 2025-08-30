@@ -16,6 +16,7 @@ struct GroupDetailView: View {
     var body: some View {
         List {
             
+            
             Section(header: Text("Pending Invitations")) {
                 if viewModel.pendingInvitations.isEmpty {
                     Text("No pending invitations")
