@@ -15,47 +15,7 @@ struct GroupDetailView: View {
     
     var body: some View {
         List {
-            Section(header: Text("Members")) {
-                ForEach(group.members.filter { $0.status == .active }) { member in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(member.username)
-                                .font(.headline)
-                            
-                            Text(member.email)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        Spacer()
-                        
-                        if member.userId == group.adminUserId {
-                            Text("Admin")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.blue.opacity(0.2))
-                                .cornerRadius(4)
-                        }
-                        
-                        // Remove button (only for admin and not for self)
-                        if let userId = authService.currentUser?.id,
-                           viewModel.isUserAdmin(userId: userId) && member.userId != userId {
-                            Button(action: {
-                                Task {
-                                    await viewModel.removeMember(memberId: member.id)
-                                }
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.red)
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
+
             
             Section(header: Text("Pending Invitations")) {
                 if viewModel.pendingInvitations.isEmpty {
