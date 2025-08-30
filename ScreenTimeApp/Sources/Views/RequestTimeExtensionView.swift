@@ -11,7 +11,7 @@ struct RequestTimeExtensionView: View {
     @State private var isSubmitting = false
     @State private var showSuccess = false
     
-    let minutesOptions = [5, 15, 30, 60, 120, 240, 420] // 5 min to 7 hours
+    let minutesOptions = [1, 5, 15, 30, 60, 120, 240, 420] // 1 min to 7 hours
     
     init() {
         // View model is injected via environment object
