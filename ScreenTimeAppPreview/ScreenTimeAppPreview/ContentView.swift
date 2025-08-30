@@ -431,52 +431,7 @@ struct GroupView: View {
                         }
                     }
                     
-                    // Members list
-                    List {
-                        Section(header: Text("Members")) {
-                            ForEach(group.members.filter { $0.status == .active }) { member in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(member.username)
-                                            .font(.headline)
-                                        Text(member.email)
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    if member.userId == group.adminUserId {
-                                        Text("Admin")
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                            }
-                        }
-                        
-                        if !group.members.filter({ $0.status == .pending }).isEmpty {
-                            Section(header: Text("Pending Invitations")) {
-                                ForEach(group.members.filter { $0.status == .pending }) { member in
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(member.username)
-                                                .font(.headline)
-                                            Text(member.email)
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        }
-                                        
-                                        Spacer()
-                                        
-                                        Text("Pending")
-                                            .font(.caption)
-                                            .foregroundColor(.orange)
-                                    }
-                                }
-                            }
-                        }
-                    }
+
                     .listStyle(InsetGroupedListStyle())
                 } else {
                     // No group yet
