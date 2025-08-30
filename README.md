@@ -1,40 +1,49 @@
 # ScreenTime Accountability App
 
-An iOS app that helps users stick to their self-imposed screen-time limits by leveraging social accountability through friend groups.
+An iOS app that helps users stick to their self-imposed screen-time limits by enlisting their friends as accountability partners.
 
 ## Features
 
 - **User Authentication**: Email/password sign-up, login, email verification
-- **Screen-Time Monitoring**: Set daily limits for specific apps and track usage
-- **Accountability Groups**: Create or join a group with friends (2-5 people)
+- **Screen-Time Mock**: Interface to pick apps, set daily limits, and track usage
+- **Accountability Groups**: Create or join one group (2-5 people)
 - **Time Extension Requests**: Request extra minutes with approval from group members
-- **Notifications**: In-app notifications and push alerts for extension requests
+- **Notifications**: In-app feed and push notifications
 - **Daily Reset**: Automatic reset of counters at midnight
 
-## Technical Details
+## Tech Stack
 
-- **Platform**: iOS 16+
-- **Framework**: SwiftUI
+- **Frontend**: SwiftUI (iOS 16+)
 - **Architecture**: MVVM (Model-View-ViewModel)
-- **Backend**: Prepared for Supabase integration (currently using mock data)
-- **Notifications**: Ready for APNs integration
+- **Mock Services**: Local Swift models to simulate backend functionality
 
 ## Getting Started
 
+### Prerequisites
+
+- Xcode 14 or later
+- iOS 16+ Simulator or device
+
+### Installation
+
 1. Clone the repository
 2. Open the project in Xcode
-3. Build and run on an iOS 16+ simulator or device
+3. Build and run on a simulator or device
 
 ## Project Structure
 
-- `ScreenTimeApp/Sources/Models`: Data models
-- `ScreenTimeApp/Sources/ViewModels`: View models for business logic
-- `ScreenTimeApp/Sources/Views`: SwiftUI views
-- `ScreenTimeApp/Sources/Services`: Service classes for authentication, etc.
+- `ScreenTimeApp/Sources/Models/`: Data models
+- `ScreenTimeApp/Sources/ViewModels/`: View models for business logic
+- `ScreenTimeApp/Sources/Views/`: SwiftUI views
+- `ScreenTimeApp/Sources/Services/`: Mock services
 
-## Screenshots
+## Running the App
 
-(Coming soon)
+Use the provided script to build and run on the iPhone 16 Pro simulator:
+
+```bash
+./run_on_iphone16pro.sh
+```
 
 ## License
 
