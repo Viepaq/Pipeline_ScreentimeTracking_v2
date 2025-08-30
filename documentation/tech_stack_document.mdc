@@ -1,0 +1,136 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Tech Stack Document
+
+This document explains, in everyday language, the choices we’ve made for the technologies in our iOS Screen-Time Accountability app. Each section shows what we use and why it helps deliver a smooth, reliable experience.
+
+## 1. Frontend Technologies
+
+We build the app’s interface—the part users see and tap—using the following key tools:
+
+*   **SwiftUI**
+
+    *   Apple’s modern framework for building iOS interfaces in a declarative, easy-to-read style.
+    *   Offers live previews in Xcode so designers and developers see changes instantly.
+
+*   **Mock Apple ScreenTime API (Swift models)**
+
+    *   Since we don’t yet have an Apple ScreenTime license, we simulate app-block behavior with local Swift data models.
+    *   Lets us prototype and refine the user flow before integrating the real API.
+
+*   **Color Palette & Styling**
+
+    *   Gray, dark gray, and blue for a clean, focus-oriented look.
+    *   Consistent font sizes and clear contrast to meet accessibility standards.
+
+*   **Xcode 15+**
+
+    *   The official Apple IDE for iOS development, with built-in tools for debugging, testing, and profiling.
+
+*   **Cursor IDE Plugin**
+
+    *   AI-driven coding assistant that suggests real-time improvements and code snippets directly inside Xcode.
+
+These choices let us deliver a responsive, visually consistent app that can evolve quickly based on user feedback.
+
+## 2. Backend Technologies
+
+The backend handles data storage, user accounts, and group logic. Here’s what we use:
+
+*   **Supabase (PostgreSQL)**
+
+    *   A hosted open-source alternative to Firebase, offering a managed PostgreSQL database.
+    *   Stores all data in tables such as `users`, `groups`, `memberships`, `requests`, `responses`, and `usage_logs`.
+
+*   **Supabase Auth**
+
+    *   Secure email/password authentication with built-in session management.
+    *   Handles sign-up, login, password recovery, and email verification.
+
+*   **HTTPS / TLS**
+
+    *   All communication between the app and Supabase happens over encrypted channels.
+
+Together, these components make sure that user profiles, daily limits, group memberships, and extension requests are stored reliably and accessed only by authorized people.
+
+## 3. Infrastructure and Deployment
+
+How we host, version, and deliver the app and its backend:
+
+*   **Supabase Hosting**
+
+    *   Supabase provides the database and authentication servers, so we don’t need to manage our own servers.
+
+*   **Git & Version Control**
+
+    *   All code (frontend and backend configuration) lives in Git repositories for safe collaboration and tracking changes.
+
+*   **CI/CD Pipeline (e.g., GitHub Actions)**
+
+    *   Automated checks run on each code change: building the app, running unit tests, and linting.
+    *   When ready, a successful build can be deployed to TestFlight for beta testing or to the App Store.
+
+This setup ensures we can push updates safely, roll back if needed, and keep development moving swiftly.
+
+## 4. Third-Party Integrations
+
+We rely on these external services to fill in key gaps:
+
+*   **Apple Push Notification Service (APNs)**
+
+    *   Sends push alerts when someone in your accountability group makes or responds to a time-extension request.
+
+*   **In-App Notification Center**
+
+    *   A local feed inside the app where users see pending requests, approvals, or denials in real time.
+
+*   **Cursor AI Plugin** (for developers)
+
+    *   Provides code suggestions and helps enforce best practices directly in Xcode.
+
+These integrations let us deliver timely alerts and maintain a clean development workflow.
+
+## 5. Security and Performance Considerations
+
+To protect user data and deliver a smooth experience, we’ve built in:
+
+*   **Authentication & Data Protection**
+
+    *   Passwords are securely hashed by Supabase (bcrypt).
+    *   Users can only read or write data for their own account or their single accountability group.
+
+*   **Encrypted Communication**
+
+    *   All API calls use HTTPS/TLS to prevent eavesdropping.
+
+*   **Access Controls**
+
+    *   Only the group admin can add or remove members; nobody else can change group membership behind the scenes.
+
+*   **Performance Optimizations**
+
+    *   SwiftUI views are lightweight and update only when the underlying data changes.
+    *   Network calls are batched and cached where possible to minimize latency.
+    *   Push notifications are handled asynchronously so the app stays responsive.
+
+These measures keep data safe, prevent unauthorized access, and ensure the app feels fast.
+
+## 6. Conclusion and Overall Tech Stack Summary
+
+In building our Screen-Time Accountability app, we chose technologies that:\
+• Align with iOS best practices (SwiftUI, Xcode)\
+• Provide managed backend services (Supabase, APNs)\
+• Simplify development (Cursor AI, Git CI/CD)
+
+This combination lets us:
+
+*   Rapidly prototype and refine the user interface.
+*   Securely manage user accounts, group logic, and screen-time data.
+*   Deliver real-time notifications and smooth daily resets.
+
+By using these tools, we strike the right balance between speed of development, reliability, and security—ensuring users have a clear, trouble-free experience as they hold each other accountable for healthier device use.

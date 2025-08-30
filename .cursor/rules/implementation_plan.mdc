@@ -1,0 +1,97 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Implementation plan
+
+## Phase 1: Environment Setup
+
+1. **Prevalidation**: In project root, run `ls -A` to ensure you’re not in an existing project; if files like `Package.swift` or `Podfile` exist, abort initialization to avoid redundancy. (Cursor Project Rules)
+2. **Install Xcode Command-Line Tools**: Run `xcode-select --install` and confirm Xcode version ≥ 14. (Tech Stack Document)
+3. **Install Node.js v20.2.1**: Use nvm: `nvm install 20.2.1 && nvm use 20.2.1`. (Tech Stack Document: Core Tools)
+   - **Validation**: Run `node -v` and verify output `v20.2.1`.
+4. **Install Swift 5.7+**: Confirm via `swift --version` (bundled with Xcode 14+). (Tech Stack Document: Core Tools)
+5. **Initialize Cursor Metrics**: Create `cursor_metrics.md` in project root. (Cursor Project Rules)
+6. **Create `.cursor` Directory**: Run `mkdir -p .cursor` if not exists. (Cursor Project Rules)
+7. **Generate `.cursor/mcp.json`**: Create file and add to `.gitignore`. (Cursor Project Rules)
+8. **Configure Supabase MCP (macOS)**: In `.cursor/mcp.json` add:
+   ```json
+   {
+     "mcpServers": {
+       "supabase": {
+         "command": "npx",
+         "args": ["-y", "@modelcontextprotocol/server-postgres", "<connection-string>"]
+       }
+     }
+   }
+   ```
+   (Tech Stack Document: Supabase via MCP)
+9. **Display Connection Link**: Provide `https://supabase.com/docs/guides/getting-started/mcp#connect-to-supabase-using-mcp` and prompt user for `<connection-string>`. (Tech Stack Document: Supabase via MCP)
+10. **Activate MCP Server**: Run `npx -y @modelcontextprotocol/server-postgres <connection-string>` and verify green status in Cursor MCP panel. (Tech Stack Document: Supabase via MCP)
+
+## Phase 2: Frontend Development (iOS SwiftUI)
+
+11. **Initialize Xcode Project**: In terminal, run `xcodebuild -project ScreenTimeApp.xcodeproj -init swiftui` at `/`. (PRD)
+12. **Create App Targets**: In Xcode, add `ScreenTimeApp` iOS target for iOS 16+. (Tech Stack Document)
+13. **Add Supabase iOS SDK**: In `Package.swift`, add dependency:
+    ```swift
+    .package(url: "https://github.com/supabase/supabase-swift.git", from: "1.0.0")
+    ```
+    (Tech Stack Document: Backend Structure)
+14. **Validation**: In Xcode, run `File > Swift Packages > Resolve Package Versions` and confirm `supabase-swift` resolves.
+15. **Implement AuthService.swift**: Create `/ScreenTimeApp/Services/AuthService.swift` with email/password login using SupabaseAuthClient. (Backend Structure Document)
+16. **Validation**: Write `AuthServiceTests.swift` in `/ScreenTimeAppTests/` and run `swift test --filter AuthServiceTests` to ensure login/signup passes.
+17. **Design LoginView.swift**: Create `/ScreenTimeApp/Views/LoginView.swift` with email, password fields and “Login” button styled per Frontend Guidelines Document. (Frontend Guidelines Document)
+18. **Design SignupView.swift**: Create `/ScreenTimeApp/Views/SignupView.swift` with email verification flow. (App Flow Document)
+19. **Implement ScreenTime Models**: Create `/ScreenTimeApp/Models/ScreenTimeLimit.swift` and `/ScreenTimeApp/Models/ScreenTimeUsage.swift` to mock API. (PRD)
+20. **Validation**: Use SwiftUI previews to validate UI layouts for LoginView and SignupView.
+21. **Create HomeView.swift**: Create `/ScreenTimeApp/Views/HomeView.swift` showing app list and daily usage with limit setters (e.g., Instagram). (App Flow Document)
+22. **Implement Limit Setting Logic**: In `HomeViewModel.swift` (in `/ScreenTimeApp/ViewModels/`), add functions to set limits via local models. (PRD)
+23. **Validation**: Write `HomeViewModelTests.swift` and run `swift test` to validate limit logic.
+24. **Implement GroupListView.swift**: Create `/ScreenTimeApp/Views/GroupListView.swift` listing current group or join/create buttons. (App Flow Document)
+25. **Implement GroupDetailView.swift**: Create `/ScreenTimeApp/Views/GroupDetailView.swift` with member list and admin controls. (App Flow Document)
+26. **Implement Invitation Flow**: In `GroupViewModel.swift`, add `searchUsers(username: String)` and `inviteUser(userID:)` using Supabase RPC. (Backend Structure Document)
+27. **Validation**: Test `GroupViewModel` with `GroupViewModelTests.swift`.
+28. **Implement RequestTimeExtensionView.swift**: Create `/ScreenTimeApp/Views/RequestExtensionView.swift` to request extra time with reason. (App Flow Document)
+29. **Implement NotificationsModel.swift**: Create `/ScreenTimeApp/Models/NotificationItem.swift` and push token registration using APNs. (Security Guideline Document)
+30. **Validation**: In simulator, register for remote notifications and inspect the APNs token in console.
+
+## Phase 3: Backend Development (Supabase)
+
+31. **Define Database Schema**: Draft SQL for tables: `users`, `groups`, `memberships`, `extension_requests`, `extension_responses`, `usage_logs`. (Backend Structure Document)
+32. **Display Schema**:
+    ```sql
+    CREATE TABLE users(...);
+    CREATE TABLE groups(...);
+    CREATE TABLE memberships(...);
+    CREATE TABLE extension_requests(...);
+    CREATE TABLE extension_responses(...);
+    CREATE TABLE usage_logs(...);
+    ```
+33. **Validation**: Use Supabase SQL Editor to ensure no SQL errors.
+34. **Run via MCP**: In terminal, execute `psql <connection-string> -f schema.sql`. (Tech Stack Document: Supabase via MCP)
+35. **Setup Auth Policies**: In Supabase Dashboard, apply RLS policies for `membership` and `requests` tables. (Security Guideline Document)
+36. **Validation**: Attempt unauthorized read/write via supabase-js in REPL to verify policies.
+
+## Phase 4: Integration
+
+37. **Connect Frontend to Supabase**: In `AuthService.swift`, initialize `SupabaseClient` with URL and anon key. (Backend Structure Document)
+38. **CORS & HTTPS**: Ensure all API calls use HTTPS and supabase-js default CORS. (Security Guideline Document)
+39. **Implement Real-Time Listener**: Use Supabase Realtime in `GroupViewModel` to subscribe to `extension_requests` and `extension_responses`. (PRD)
+40. **Validation**: In two simulators, send request from one and verify live update in another.
+41. **Daily Reset Job**: Write a Supabase Edge Function (`/functions/daily_reset/index.ts`) scheduled at 00:00 local time to reset `usage_logs`. (Non-Functional Requirements)
+42. **Validation**: Manually trigger function via `supabase functions invoke daily_reset` and inspect `usage_logs` resets.
+
+## Phase 5: Deployment & CI/CD
+
+43. **Configure APNs**: In Apple Developer portal, create APNs key and upload to Supabase Settings > Storage > APNs. (Tech Stack Document)
+44. **Setup GitHub Actions**: Create `.github/workflows/ci.yml` to run `swift test`, `xcodebuild` for UI tests, and `npm run lint` for MCP code. (Cursor Project Rules)
+45. **Deploy Edge Function**: Run `supabase functions deploy daily_reset --project-ref <your-project-ref>`. (Tech Stack Document)
+46. **Validation**: Check function status with `supabase functions status daily_reset`.
+47. **Archive iOS Build**: In Xcode CI step, use `xcodebuild -scheme ScreenTimeApp -archivePath ScreenTimeApp.xcarchive archive`. (Tech Stack Document)
+48. **Distribute via TestFlight**: Use `altool` to upload archive: `xcrun altool --upload-app -f ScreenTimeApp.ipa`. (PRD Section Release)
+49. **Post-Deployment Test**: Run end-to-end scenario: login, set limit, exceed, request extension, approve in another account. (App Flow Document)
+50. **Monitor Metrics**: Check `cursor_metrics.md` is updated per Cursor rules and confirm no critical errors in MCP logs. (Cursor Project Rules)

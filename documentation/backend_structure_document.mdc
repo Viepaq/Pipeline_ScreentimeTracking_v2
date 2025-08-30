@@ -1,0 +1,16 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+Everything looks well thought out and aligns with the project goals. I don’t see any major gaps, but before you proceed to generate the full documents, here are a few quick questions to consider:
+
+1.  Mock ScreenTime API behavior • Do you want to define exactly how the mock API enforces limits (e.g., simply blocks the app or shows a warning)?
+2.  Extension-approval rules • Should we specify the exact minimum number of approvals required (majority vs. fixed number)?
+3.  Data retention and cleanup • Do you have a policy for how long to keep request history and audit logs?
+4.  Error handling & retries • Should we outline how the backend handles failed push notifications or database errors?
+5.  Future analytics hooks • Even if you’re not doing analytics now, do you want placeholders in the schema to make adding them easier later?
+
+If none of these need adjustments, I’m good to proceed with the detailed PRD, App Flow, Tech Stack Doc, and Backend Structure Document. Let me know!

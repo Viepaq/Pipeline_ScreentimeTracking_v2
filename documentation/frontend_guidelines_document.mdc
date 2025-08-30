@@ -1,0 +1,147 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Frontend Guideline Document
+
+This document outlines how we build and organize the iOS frontend for our Screen-Time Accountability app. It’s written in plain language so everyone—from seasoned developers to newcomers—can understand how the pieces fit together and follow best practices.
+
+## 1. Frontend Architecture
+
+### Frameworks and Libraries
+
+*   **SwiftUI** for all user interfaces (iOS 16+)
+*   **Combine** for reactive state updates and asynchronous work
+*   **Swift Package Manager (SPM)** to manage any third-party libraries (e.g., Supabase client)
+*   **Cursor plugin** in Xcode to speed up code generation and navigation
+
+### Architectural Style: MVVM
+
+*   **Models** hold raw data (e.g., user profile, group info, time limits)
+*   **ViewModels** mediate between models and views, exposing only what the UI needs
+*   **Views** declare how things look and bind to ViewModel properties using SwiftUI’s property wrappers (`@StateObject`, `@ObservedObject`, `@Binding`)
+
+### Scalability, Maintainability, Performance
+
+*   **Separation of concerns:** UI code (Views) stays free of business logic, making it easy to swap or refactor pieces.
+*   **Modular structure:** Each feature (authentication, group management, extension requests) lives in its own folder with Models, ViewModels, and Views grouped together.
+*   **Lightweight updates:** SwiftUI only redraws parts of a screen that change, keeping the UI snappy.
+
+## 2. Design Principles
+
+### Usability
+
+*   Keep screens straightforward: clear labels, simple flows, one primary action per screen.
+*   Use familiar iOS patterns (NavigationStack, TabView) so users don’t have to relearn basics.
+
+### Accessibility
+
+*   Support **Dynamic Type** so text resizes with the user’s settings.
+*   Label interactive elements for **VoiceOver** (use `.accessibilityLabel` and `.accessibilityHint`).
+*   Ensure color contrast meets at least a 4.5:1 ratio for text.
+
+### Responsiveness
+
+*   Design for both portrait and landscape—use flexible stacks (VStack, HStack) and GeometryReader where needed.
+*   Use `LazyVStack` and `LazyHStack` for long lists to load items as needed.
+
+## 3. Styling and Theming
+
+### Styling Approach
+
+*   **Flat, modern look** with subtle shadows and rounded corners.
+*   Define reusable style modifiers in a file like `StyleModifiers.swift`.
+
+### Color Palette
+
+*   Primary Blue: #007AFF
+*   Light Gray (backgrounds): #F5F5F5
+*   Dark Gray (text): #333333
+*   Accent Teal: #00C7BE
+*   Light Mode vs. Dark Mode: define adaptive colors in `xcassets`.
+
+### Typography
+
+*   **System Font (San Francisco)** via `Font.system(size: , weight: )`.
+*   Headings: `.title` / `.headline`
+*   Body: `.body` / `.subheadline`
+
+### Theming
+
+*   Single source of truth in an `AppTheme` struct: holds colors, fonts, spacing constants.
+*   Pass theme via `EnvironmentObject` or access via static properties (e.g., `AppTheme.primaryColor`).
+
+## 4. Component Structure
+
+### Organization
+
+Project root → ├─ Models/\
+├─ ViewModels/\
+├─ Views/\
+│ ├─ Auth/\
+│ ├─ GroupManagement/ │ ├─ ExtensionFlow/\
+│ └─ Shared/\
+├─ Services/ (networking, notifications, time tracking)\
+└─ Resources/ (assets, colors,…)
+
+### Reusable Components
+
+*   **Custom buttons, input fields, alerts** live in `Views/Shared`.
+*   Compose complex screens by combining smaller pieces—for example, the group member cell used in both the invite list and the group details view.
+
+## 5. State Management
+
+### Local State
+
+*   Use `@State` for simple, view-local state (e.g., text field inputs).
+
+### ViewModel State
+
+*   Use `@StateObject` for a ViewModel you own, and `@ObservedObject` when injecting a ViewModel from outside.
+*   For global or cross-screen data (current user, current group), use `@EnvironmentObject`.
+
+### Data Flow
+
+1.  View triggers an action (button tap).
+2.  ViewModel calls a Service (e.g., `AuthService`, `GroupService`).
+3.  Service uses Supabase SDK to read/write data.
+4.  ViewModel `@Published` properties update.
+5.  SwiftUI view responds automatically.
+
+## 6. Routing and Navigation
+
+*   Use **NavigationStack** (iOS 16+) for push/pop flows.
+*   For modal flows (e.g., extension request sheet), use `.sheet(isPresented:)`.
+*   Define a central `AppRouter` if flows become complex—an enum of routes and a `@Published currentRoute` in an `EnvironmentObject`.
+
+## 7. Performance Optimization
+
+*   **Lazy loading lists:** `LazyVStack` for long lists.
+*   **Code splitting:** Break large views into subviews to ensure SwiftUI only evaluates what’s needed.
+*   **Background work:** Perform network calls and heavy calculations off the main thread (Combine’s `.subscribe(on:)`, `.receive(on:)`).
+*   **Asset optimization:** Use SF Symbols where possible; optimize image sizes and use `Image(decorative:)` if no accessibility label is needed.
+
+## 8. Testing and Quality Assurance
+
+### Unit Tests
+
+*   **ViewModel tests** with `XCTest` to verify logic (validation, API calls, vote tallying).
+*   **Service tests** mocking Supabase responses.
+
+### UI Tests
+
+*   **XCUITest** for major flows: sign-up/login, group creation, extension request and voting.
+*   Automate tests in CI (GitHub Actions or similar).
+
+### SwiftUI Previews
+
+*   Provide at least one preview per view, including edge cases (empty lists, error states).
+
+## 9. Conclusion and Overall Frontend Summary
+
+We’re using SwiftUI + MVVM + Combine to build a clean, maintainable, and performant iOS app. By following these guidelines—component-based structure, clear styling, reactive state management, and thorough testing—we ensure the app stays scalable and robust as we add new features.
+
+This setup lets any developer jump in, understand how screens are built, and contribute with confidence. If you have questions or see opportunities to refine these patterns, please raise them so we can keep our frontend architecture strong and consistent.

@@ -1,0 +1,118 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+## Project Overview
+
+*   **Type:** iOS Screen Time Accountability App
+*   **Description:** Develop an iOS app where users set screen time limits for specific apps and form accountability groups with friends to help them stick to their goals.
+*   **Primary Goal:** Enable users to configure daily screen time limits per app and leverage social accountability—groups of 2–5 friends—to request and approve time extensions, with automated resets at midnight.
+
+## Project Structure
+
+### Framework-Specific Routing
+
+*   **Directory Rules:**
+
+    *   `SwiftUI (iOS 16+)`: Organize by feature modules under `Sources/` with a `Scenes/` subfolder. Use `NavigationStack` for all flows.
+    *   Example 1: `Sources/App/Scenes/HomeScene/HomeView.swift` → Home dashboard.
+    *   Example 2: `Sources/App/Scenes/GroupScene/GroupView.swift` → Accountability group management.
+    *   Example 3: `Sources/App/Scenes/RequestScene/RequestView.swift` → Time extension request flow.
+
+### Core Directories
+
+*   **Versioned Structure:**
+
+    *   `App`: SwiftUI App entry point (`ScreenTimeAppApp.swift`) and global modifiers.
+    *   `Models`: Local Swift models and mock Screen Time API types.
+    *   `ViewModels`: Combine-based state managers per scene.
+    *   `Views`: Reusable SwiftUI view components (buttons, cells, forms).
+    *   `Services`: API adapters—`MockScreenTimeAPI.swift`, `SupabaseService.swift`, `PushNotificationService.swift`.
+
+### Key Files
+
+*   **Stack-Versioned Patterns:**
+
+    *   `ScreenTimeAppApp.swift`: SwiftUI App struct for iOS 16+ combining scene declarations, Supabase initialization, and APNs registration.
+    *   `MockScreenTimeAPI.swift`: iOS 16+ implementation of a local mock service replicating Screen Time API behavior.
+    *   `SupabaseService.swift`: Uses Supabase-Swift (via MCP) for auth and PostgreSQL operations, with async/await.
+    *   `PushNotificationService.swift`: Wraps `UNUserNotificationCenter` and APNs token registration.
+
+## Tech Stack Rules
+
+*   **Version Enforcement:**
+
+    *   `SwiftUI@iOS16+`: Must use `NavigationStack` and the new Swift concurrency model (`async/await`); no UIKit storyboards or `UIViewControllerRepresentable` except for specialized UIs.
+    *   `Supabase-Swift@mcp`: Enforce Supabase Auth flows via `AuthClient` and database calls via `DatabaseClient`; no direct REST or custom HTTP clients.
+    *   `APNs@latest`: All push notifications go through `UNUserNotificationCenter` with proper request authorization and `NotificationRequest` usage.
+    *   `MockScreenTimeAPI@local`: Use a singleton service simulating Apple’s Screen Time; no real Screen Time entitlements.
+
+## PRD Compliance
+
+*   "iOS 16+ Only": Target iOS 16 and above; do not include backward compatibility layers for earlier iOS versions.
+*   "One Group Only": Each user can be a member of exactly one accountability group; enforce this constraint at the data-model and service layer.
+
+## App Flow Integration
+
+*   **Stack-Aligned Flow:**
+
+    *   SwiftUI Auth Flow → `LoginScene/LoginView.swift` uses `SupabaseService.signIn` → navigates to `HomeScene/HomeView.swift`.
+    *   Group Management → `GroupScene/GroupView.swift` presents group creation/join UI backed by `ViewModels/GroupViewModel.swift`.
+    *   Extension Requests → `RequestScene/RequestView.swift` triggers `SupabaseService.createRequest` and notifies via `PushNotificationService`.
+    *   Daily Reset → Background task scheduled at midnight via `App/Providers/ResetScheduler.swift`.
+
+## Best Practices
+
+*   SwiftUI
+
+    *   Use `@StateObject` and `@ObservedObject` exclusively for `ViewModel` bindings.
+    *   Favor composition of small view components over large monolithic views.
+    *   Leverage `async/await` for all network and long-running tasks.
+
+*   Supabase-Swift (MCP)
+
+    *   Centralize all auth and database calls in a single `SupabaseService` class.
+    *   Use typed models (`Codable`) and avoid raw SQL queries.
+    *   Handle errors via Swift’s `Result` type and present user-friendly messages.
+
+*   APNs & Notifications
+
+    *   Request authorization at app launch and handle all delegate callbacks in one `NotificationDelegate`.
+    *   Define notification categories and actions for extension approvals/denials.
+    *   Test push in both foreground and background states.
+
+*   Mock Screen Time API
+
+    *   Isolate mock logic under `Services/MockScreenTimeAPI.swift`.
+    *   Use Combine publishers to simulate live updates of usage statistics.
+    *   Ensure deterministic unit tests by injecting configurable mock data.
+
+## Rules
+
+*   Derive folder/file patterns directly from tech-stack versions.
+*   If SwiftUI@iOS16+: Enforce `NavigationStack` flows under `Scenes/`—no UIKit navigation.
+*   If using Supabase-Swift@mcp: All auth and DB calls through `SupabaseService`; no custom REST clients.
+*   Never mix version patterns (e.g., do not include storyboard/xib files in SwiftUI-only targets).
+
+## Rules Metrics
+
+Before starting the project development, create a metrics file in the root of the project called `cursor_metrics.md`.
+
+### Instructions:
+
+*   Each time a cursor rule is used as context, update `cursor_metrics.md`.
+*   Use the following format for `cursor_metrics.md`:
+
+# Rules Metrics
+
+## Usage
+
+The number of times rules are used as context
+
+*   swiftui-navigation.mdc: 0
+*   supabase-service.mdc: 0
+*   apns-notification.mdc: 0
+*   mock-api.mdc: 0

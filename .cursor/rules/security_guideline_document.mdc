@@ -1,0 +1,25 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Summary Confirmation and Next Steps
+
+Thank you for the clear summary. Everything looks correct and aligns with the project requirements and tech stack. Here’s how we can proceed:
+
+## 1. Security Guideline Document  
+   • Outline security principles tailored to this app (authentication, authorization, data protection, API security, etc.)  
+   • Detail Supabase hardening, secure communication, input validation, rate limiting, and CSP/settings in SwiftUI.  
+
+## 2. Detailed Implementation Plan  
+   • Step-by-step instructions for each feature (database schema, SwiftUI screens, API calls, notifications, scheduled tasks).  
+   • Include code snippets, folder structure, naming conventions, and best practices.  
+
+## 3. Cursor Project Rules  
+   • Define naming conventions, linting rules, and security-focused code checks for Cursor IDE.  
+   • Automate enforcement of patterns (e.g., input validation, no hard-coded secrets).  
+
+---
+Which document would you like me to generate first? Feel free to specify or request additional details for any section.

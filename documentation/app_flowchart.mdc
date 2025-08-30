@@ -1,0 +1,32 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+flowchart TD
+    StartApp[Launch App] --> AuthCheck{User Authenticated}
+    AuthCheck -->|No| AuthFlow[Login or Signup Screen]
+    AuthFlow --> EmailVerify{Email Verified}
+    EmailVerify -->|No| AuthFlow
+    EmailVerify -->|Yes| Dashboard[Home Screen]
+    AuthCheck -->|Yes| Dashboard
+    Dashboard --> AppConfig[Configure App Limits]
+    AppConfig --> Dashboard
+    Dashboard --> GroupMgmt[Group Management]
+    GroupMgmt --> CreateGroup[Create or Invite Members]
+    CreateGroup --> Dashboard
+    Dashboard --> UsageMonitor[Monitor App Usage]
+    UsageMonitor -->|Below Limit| UsageMonitor
+    UsageMonitor -->|Limit Reached| BlockScreen[Limit Reached Screen]
+    BlockScreen --> RequestExt[Request Extension Form]
+    RequestExt --> SubmitReq[Submit Extension Request]
+    SubmitReq --> NotifyGroup[Notify Group Members]
+    NotifyGroup --> AwaitResponse[Await Responses]
+    AwaitResponse -->|Approved Threshold Met| GrantExt[Grant Extension]
+    GrantExt --> Dashboard
+    AwaitResponse -->|Denied Threshold Met| DenyExt[Extension Denied]
+    DenyExt --> BlockScreen
+    Dashboard --> DailyReset[Daily Reset at Midnight]
+    DailyReset --> Dashboard

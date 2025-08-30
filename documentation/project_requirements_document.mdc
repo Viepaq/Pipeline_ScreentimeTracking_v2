@@ -1,0 +1,155 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Project Requirements Document
+
+## 1. Project Overview
+
+We are building an iOS app that helps users stick to their self-imposed screen-time limits by enlisting their friends as accountability partners. Each user picks which apps (for example, Instagram, TikTok, YouTube) they want to limit and sets a combined daily cap. If they hit that cap, the app “blocks” access via a mock of Apple’s ScreenTime API. When they need extra minutes, they request an extension from their accountability group—friends who must approve or deny the request before more time is granted. At midnight each day, limits reset automatically.
+
+The goal is to leverage social accountability to reduce mindless phone use. Success will be measured by users consistently staying within their set limits (or getting mindful about why they extended), smooth onboarding, and reliable real-time notifications. In the MVP, every user can create or join exactly one group, invite 1–4 friends, and enjoy a streamlined SwiftUI experience on iOS 16.
+
+## 2. In-Scope vs. Out-of-Scope
+
+### In-Scope (MVP)
+
+*   **User Authentication**: Email/password sign-up, login, email verification.
+
+*   **Screen-Time Mock**: SwiftUI interface to pick installed apps, set combined daily limit, mock tracking/blocking behavior.
+
+*   **Accountability Groups**:
+
+    *   Create one group (2–5 people), invite via in-app username search.
+    *   One “admin” role (group creator) who can add/remove members.
+    *   Users can belong to only one group.
+
+*   **Time Extension Requests**:
+
+    *   Request extra minutes (1 min–7 hrs), select app, add reason.
+    *   Other members receive in-app and push notifications.
+    *   Approvals/denials with required counts based on group size.
+
+*   **Notifications**: In-app feed and Apple Push Notifications (APNs).
+
+*   **Daily Reset**: Automatic reset of counters at 00:00 local time, summary notification.
+
+*   **Settings Page**: Profile editing, password change, notification preferences, view history of extensions.
+
+### Out-of-Scope (Phase 2+)
+
+*   Real Apple ScreenTime API & MDM integration (we use a mock for MVP).
+*   iPad or multi-device sync.
+*   Advanced analytics or reporting.
+*   Monetization (subscriptions, in-app purchases).
+*   Multiple simultaneous groups or public group discovery.
+*   Social login or phone-contact imports.
+*   Admin roles beyond basic add/remove privileges.
+
+## 3. User Flow
+
+When a new user launches the app, they see a welcome screen offering “Sign Up” or “Login.” Choosing Sign Up leads to an email/password form, followed by an email verification step. After verification, a short SwiftUI tutorial explains how to set daily limits, make or join an accountability group, and request time extensions. The tutorial also asks permission to send push notifications.
+
+Once onboarded, the user lands on the main tab bar with three pages:
+
+1.  **Limits** – pick apps and set a total daily cap. A live progress bar shows minutes used versus remaining.
+2.  **Group** – view or create the accountability group, invite friends by username, accept pending invites, and see current members.
+3.  **Settings** – update profile, change password, toggle notification types, and review extension history.
+
+When the user hits their daily cap or anticipates needing extra time, they switch to the Group page, open their active group, and tap “Request More Time.” They select an app, enter desired extra minutes (1 min–7 hrs), and type a reason. All other members get both an in-app notification and a push alert. They open the notification, see the details, then approve or deny—denials include a required comment. Once the threshold of approvals is reached (half of the *other* members), the system grants the extra minutes, updates the mock ScreenTime settings, and the user can reopen the blocked app until they run out again or midnight rolls around.
+
+## 4. Core Features
+
+*   **Authentication & Profile**\
+    • Email/password signup, login, email confirmation\
+    • Supabase Auth for secure session management\
+    • Profile fields: username (unique), email, hashed password
+*   **Screen Time Configuration (Mock)**\
+    • List installed apps (hard-coded for mock: Instagram, TikTok, YouTube)\
+    • Set a combined daily limit in minutes\
+    • Progress bar showing usage vs. limit\
+    • Simulated block once limit is reached
+*   **Accountability Group Management**\
+    • Create one group (2–5 people) with a name and optional description\
+    • In-app username search to invite friends\
+    • Group admin privileges: add/remove members\
+    • Pending invitations workflow\
+    • Single group membership per user
+*   **Time Extension Requests**\
+    • Select target app, extra minutes (1 min–7 hrs), reason (text)\
+    • Store requests with timestamp, requester, app, duration, reason\
+    • Notification sent to other members upon submission
+*   **Approval Workflow**\
+    • In-app & push notifications (APNs) for new requests and responses\
+    • Approve or deny with optional reason (mandatory on deny)\
+    • Approval threshold:\
+    – 2 members total: 1 other approval\
+    – 3 members total: 1 other approval\
+    – 4 members total: 2 approvals\
+    – 5 members total: 2 approvals\
+    • Automatic grant/deny when threshold met
+*   **Daily Reset & Summary**\
+    • Cron-style job at 00:00 local time to reset all counters\
+    • Push summary: total daily usage, extensions granted
+*   **Settings & History**\
+    • Edit username, email, password\
+    • Toggle push/in-app notifications\
+    • View history: date, app, original limit, extension requests, reasons, outcomes
+
+## 5. Tech Stack & Tools
+
+*   **Frontend**\
+    • SwiftUI (iOS 16+)\
+    • Local Swift models to mock Apple ScreenTime API
+*   **Backend**\
+    • Supabase (PostgreSQL) via MCP for data and authentication\
+    • Supabase Auth for user sessions\
+    • Tables: `users`, `groups`, `memberships`, `requests`, `responses`, `usage_logs`
+*   **Notifications**\
+    • Apple Push Notification service (APNs)\
+    • In-app notification center
+*   **Development Tools**\
+    • Xcode 15+\
+    • Cursor IDE plugin for AI-powered code suggestions\
+    • Git for version control
+
+## 6. Non-Functional Requirements
+
+*   **Performance**\
+    • App startup: < 2 seconds on modern devices\
+    • Tab switching: < 200 ms render time\
+    • Notification delivery latency: < 5 seconds typical
+*   **Security & Privacy**\
+    • All API calls over HTTPS (TLS 1.2+)\
+    • Passwords hashed by Supabase (bcrypt)\
+    • Users see only their group’s data\
+    • GDPR-style user data deletion on request
+*   **Reliability**\
+    • 99.9% backend uptime\
+    • Retry logic for push notifications failures
+*   **Usability**\
+    • Accessible text sizes and color contrast (WCAG AA)\
+    • Clear error messages for network/auth failures
+
+## 7. Constraints & Assumptions
+
+*   We use a **mock ScreenTime API** now; real Apple license and MDM integration come later.
+*   Targeting **iOS 16+** on iPhone only (no iPad for MVP).
+*   Supabase instance must be available and properly secured.
+*   Each user can join **exactly one** group.
+*   Push notifications rely on valid APNs certificates/config.
+*   We assume users have internet connectivity for real-time sync; offline mode is not supported.
+
+## 8. Known Issues & Potential Pitfalls
+
+*   **Mock vs. Real API**: Mock behavior might differ from Apple’s official ScreenTime API. Plan for adaptation when license arrives.
+*   **APNs Rate Limits**: Bulk notifications could hit provider limits—batch or exponential back-off may be needed.
+*   **Time Zone Handling**: Midnight reset must respect the user’s local time zone. Test across DST boundaries.
+*   **Network Flakiness**: Approval workflow relies on real-time requests; design for retry and conflict resolution.
+*   **Data Consistency**: Simultaneous approvals/denials need transactional handling in the database to avoid race conditions.
+*   **Privacy**: Ensure group admins cannot see private device usage data beyond what the mock exposes.
+
+With this PRD, the AI model can generate subsequent technical documents—detailed tech stack, frontend guidelines, backend structure, app flowcharts, and IDE rules—without ambiguity.

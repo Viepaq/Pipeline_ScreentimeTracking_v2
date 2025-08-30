@@ -1,0 +1,58 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# App Flow Document
+
+## Onboarding and Sign-In/Sign-Up
+
+When a new user first opens the app, they see a welcome screen with two clear options: Sign Up and Log In. To create an account they tap Sign Up and enter an email address, choose a password, and confirm it. After submitting these details the app sends an email with a verification link. Once the user taps the link in their email, the app returns to the onboarding flow and shows a brief tutorial. This tutorial explains how to pick apps to limit, how to form an accountability group, and how to request extra time. During onboarding the app also asks permission to send push notifications.
+
+If the user already has an account they tap Log In and enter their email and password. If they forget their password they tap a Forgot Password link, enter their email, and receive a reset link by email. After resetting the password they return to the login screen. After a successful login or email verification the user lands on the main interface with the bottom tab bar visible. At any time a signed-in user can tap their profile icon in settings to Sign Out and return to the welcome screen.
+
+## Main Dashboard or Home Page
+
+Once logged in the user sees a bottom tab bar with three tabs labeled Limits, Group, and Settings. The Limits tab is selected by default and shows a header with today’s date and a summary of remaining minutes. Below the header is a progress bar that fills as the user spends time in their chosen apps. At the bottom of the screen a button labeled Edit lets the user adjust their daily limit and choose which apps to include.
+
+Tapping the Group tab brings the user to their accountability group screen. If they have no group yet they see an option to Create Group. If they already belong to a group they see the group name at the top, a list of current members with their avatars, and a button to View Pending Invites if there are any outstanding requests. From this screen the group admin can add or remove members.
+
+The Settings tab shows the user’s profile information at the top and a series of options below it. The user can tap Edit Profile to change their username or email, tap Change Password to update their password, and tap Notification Preferences to adjust push or in-app alerts. At the bottom of the Settings screen the user can tap View History to see past extension requests and outcomes, and can tap Sign Out.
+
+## Detailed Feature Flows and Page Transitions
+
+When the user wants to set or update their daily screen time limit, they start on the Limits tab and tap the Edit button. This opens a new screen where they see a mock list of apps like Instagram, TikTok, and YouTube, each with a field to enter minutes per day. The user types a number or drags a slider, then taps Save. The app returns to the Limits tab and the progress bar updates to show the new daily cap.
+
+To create a new accountability group the user taps the Group tab, then taps Create Group. They enter a group name and tap Next. On the next screen they search for friends by typing their in-app usernames into a search field. Each search result has an Invite button. The user can invite up to four friends. When they tap Done the app shows a Group Created screen noting that invitations have been sent. If the user is the group admin they also see options to add or remove members later.
+
+When someone accepts an invitation they appear in the member list. The admin can return to the Group tab and tap a Remove icon next to a member’s name to revoke membership. Non-admin users only see the list but do not see remove controls.
+
+If the user reaches their daily limit or anticipates needing more time, they switch to the Group tab and tap a Request More Time button under the group name. This opens a form where they pick which app they need more time for, enter extra minutes (from 1 up to 420), and type a reason. Tapping Submit sends the request to all other group members and returns the user to the Limits tab with a banner saying “Request sent.”
+
+Each other member sees an in-app notification in the Settings tab’s notification feed and receives a push alert. Tapping the notification opens the request details showing the requester’s name, the app, the requested minutes, and the reason. At the bottom of the screen the member can tap Approve or Deny. If they tap Deny they must type a short comment explaining why. Once they choose, the app returns them to their last tab and shows feedback.
+
+The system tracks responses and once the required number of approvals is reached, it notifies the requester that the extra time has been granted. The Limits tab progress bar then updates to include the newly granted minutes. If the threshold is not met or enough members deny, the requester sees a notification that the request was denied and the reasons given. The app then blocks further access to the requested app until midnight.
+
+## Settings and Account Management
+
+In Settings the user can update personal information and app preferences. Tapping Edit Profile opens a screen with text fields for username and email. After making changes and tapping Save, the app updates their profile on Supabase and returns to Settings. Tapping Change Password lets the user enter their current password and a new password twice. After tapping Update the app confirms success and returns them to Settings.
+
+Tapping Notification Preferences opens a screen where the user can toggle in-app and push notifications on or off. Changing these settings takes effect immediately. Tapping View History opens a paged list showing each date, the apps used, the original limit, any extension requests with reasons and outcomes, and timestamps. From History the user taps Back to return to Settings or any other part of the app.
+
+The group admin has additional controls in Settings under a Group Management section. They tap Manage Group to see current members with Remove buttons and a Pending Invites list with Cancel Invite options. Any changes here update the group data and notify affected users.
+
+## Error States and Alternate Paths
+
+If the user enters an invalid email or password at login, the app shows an error message like “Invalid email or password. Please try again.” If network connectivity is lost during login or signup the app presents a banner saying “Cannot connect. Please check your internet connection” and offers a Retry button. During password reset, if the email is not found the app shows “No account found for this email.”
+
+When editing limits or settings, if saving fails due to a network error the app displays “Unable to save changes. Try again later” and does not navigate away. During group creation, if the user tries to invite more than four friends the app prevents it and shows a message “You can invite up to four friends only.” If a user attempts to request extra time after midnight when limits have reset, the app shows “Your daily limit has been reset. Please adjust your limit before requesting extra time.”
+
+If a push notification fails to deliver, the app retries in the background. If repeated failures occur, the app logs the error and shows a small badge in the Settings tab warning the user to check notification permissions. If two or more group members deny a request before the needed approvals are reached, the requester gets an immediate denial notification and the request is closed.
+
+## Conclusion and Overall App Journey
+
+From the moment a user first opens the app they are guided through account creation, email verification, and a short tutorial that highlights how to set daily limits, make or join an accountability group, and request extra time. After onboarding they land on a simple tab bar with three pages where they manage limits, handle group interactions, and adjust settings. Every core feature is reachable within two taps, and screens smoothly transition to maintain context.
+
+When the user sets a limit, the daily usage progress is clearly visible. If they need more time they submit a request to friends, who can approve or deny in an intuitive flow with required comments on denial. All interactions generate in-app and push notifications so nothing is missed. At midnight the app resets limits and sends a summary of the day, readying the user for the next cycle. Common errors and network problems are caught early and presented in plain language, keeping the user informed and on track to meet their screen-time goals.
