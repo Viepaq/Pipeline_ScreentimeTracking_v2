@@ -14,11 +14,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A2B3C4D5E6F7A8B9C0D1E37 /* ScreenTimeAppPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenTimeAppPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2B3C4D5E6F7A8B9C0D1E30 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7A8B9C0D1E32 /* ScreenTimeAppPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeAppPreviewApp.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7A8B9C0D1E34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7A8B9C0D1E36 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7A8B9C0D1E37 /* ScreenTimeAppPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenTimeAppPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,14 +40,6 @@
 			);
 			sourceTree = "<group>";
 		};
-		1A2B3C4D5E6F7A8B9C0D1E3B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1A2B3C4D5E6F7A8B9C0D1E37 /* ScreenTimeAppPreview.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1A2B3C4D5E6F7A8B9C0D1E3A /* ScreenTimeAppPreview */ = {
 			isa = PBXGroup;
 			children = (
@@ -57,6 +49,14 @@
 				1A2B3C4D5E6F7A8B9C0D1E3C /* Preview Content */,
 			);
 			path = ScreenTimeAppPreview;
+			sourceTree = "<group>";
+		};
+		1A2B3C4D5E6F7A8B9C0D1E3B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B3C4D5E6F7A8B9C0D1E37 /* ScreenTimeAppPreview.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1A2B3C4D5E6F7A8B9C0D1E3C /* Preview Content */ = {
@@ -272,6 +272,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ScreenTimeAppPreview/Preview Content\"";
+				DEVELOPMENT_TEAM = R5G5JRPTYH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -300,6 +301,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ScreenTimeAppPreview/Preview Content\"";
+				DEVELOPMENT_TEAM = R5G5JRPTYH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -323,20 +325,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A2B3C4D5E6F7A8B9C0D1E42 /* Build configuration list for PBXProject "ScreenTimeAppPreview" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1A2B3C4D5E6F7A8B9C0D1E43 /* Debug */,
-				1A2B3C4D5E6F7A8B9C0D1E44 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		1A2B3C4D5E6F7A8B9C0D1E3E /* Build configuration list for PBXNativeTarget "ScreenTimeAppPreview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A2B3C4D5E6F7A8B9C0D1E45 /* Debug */,
 				1A2B3C4D5E6F7A8B9C0D1E46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A2B3C4D5E6F7A8B9C0D1E42 /* Build configuration list for PBXProject "ScreenTimeAppPreview" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A2B3C4D5E6F7A8B9C0D1E43 /* Debug */,
+				1A2B3C4D5E6F7A8B9C0D1E44 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -552,6 +552,7 @@ struct Group: Identifiable {
     var id: String
     var name: String
     var description: String?
+    var groupPictureUrl: String? = nil
     var adminUserId: String
     var createdAt: Date = Date()
     var updatedAt: Date = Date()

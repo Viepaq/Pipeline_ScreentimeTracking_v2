@@ -23,29 +23,20 @@ struct MainTabView: View {
     @State private var selectedTab: Tab = .groups
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Main content
-            VStack(spacing: 0) {
-                switch selectedTab {
-                case .groups:
-                    GroupView()
-                case .restrict:
-                    HomeView()
-                case .settings:
-                    SettingsView()
-                }
-
-                // Add some bottom padding to account for the custom tab bar
-                Spacer().frame(height: 90)
+        VStack(spacing: 0) {
+            switch selectedTab {
+            case .groups: GroupView()
+            case .restrict: HomeView()
+            case .settings: SettingsView()
             }
-            .edgesIgnoringSafeArea(.bottom)
-
-            // Custom tab bar
+        }
+        .safeAreaInset(edge: .bottom) {
             CustomTabBar(selectedTab: $selectedTab)
                 .padding(.horizontal, 20)
-                .padding(.bottom, 10)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .offset(y: -10)
         }
-        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
@@ -55,14 +46,34 @@ struct CustomTabBar: View {
 
     var body: some View {
         HStack(spacing: 40) {
-            TabBarItem(icon: "house.fill", tab: .groups, selectedTab: $selectedTab)
+            TabBarItem(icon: "person.2.fill", tab: .groups, selectedTab: $selectedTab)
             TabBarItem(icon: "lock.fill", tab: .restrict, selectedTab: $selectedTab)
             TabBarItem(icon: "gearshape.fill", tab: .settings, selectedTab: $selectedTab)
         }
         .padding(15)
-        .background(Color.white.opacity(0.1))
+        .background(Color(red: 0.16, green: 0.16, blue: 0.18).opacity(0.95))
         .clipShape(Capsule())
-        .shadow(color: .white.opacity(0.2), radius: 10, x: 0, y: 0)
+        .overlay(
+            Capsule()
+                .stroke(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.white.opacity(0.18),
+                            Color.white.opacity(0.06),
+                            Color.black.opacity(0.20)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 0.8
+                )
+        )
+        .overlay(
+            Capsule()
+                .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+        )
+        .shadow(color: Color.black.opacity(0.22), radius: 12, x: 0, y: 8)
+        .shadow(color: Color.white.opacity(0.06), radius: 1, x: 0, y: -1)
     }
 }
 
@@ -146,8 +157,24 @@ struct HomeView: View {
                     }
                     .padding()
                     .background(Color(.systemBackground))
-                    .cornerRadius(12)
-                    .shadow(radius: 2)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.white.opacity(0.20),
+                                        Color.white.opacity(0.10),
+                                        Color.black.opacity(0.14)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 0.8
+                            )
+                    )
+                    .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
+                    .shadow(color: Color.white.opacity(0.04), radius: 0.5, x: 0, y: -0.5)
                     .padding(.horizontal)
                     
                     // App List
@@ -196,16 +223,56 @@ struct HomeView: View {
                             }
                             .padding()
                             .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.white.opacity(0.14),
+                                                Color.white.opacity(0.06),
+                                                Color.black.opacity(0.10)
+                                            ]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 0.6
+                                    )
+                            )
+                            .shadow(color: Color.black.opacity(0.07), radius: 5, x: 0, y: 3)
+                            .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
                         }
                         
-                        Button("Reset All Usage") {
+                        Button(action: {
                             viewModel.resetUsage()
+                        }) {
+                            Text("Reset All Usage")
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.red)
+                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .stroke(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0.15),
+                                                    Color.white.opacity(0.07),
+                                                    Color.black.opacity(0.12)
+                                                ]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 0.7
+                                        )
+                                )
+                                .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 5)
+                                .shadow(color: Color.white.opacity(0.04), radius: 0.5, x: 0, y: -0.5)
                         }
-                        .buttonStyle(.bordered)
-                        .tint(.red)
-                        .frame(maxWidth: .infinity)
                         .padding(.top)
+                        .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal)
                 }
@@ -312,7 +379,24 @@ struct AppLimitRow: View {
         }
         .padding()
         .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.white.opacity(0.16),
+                            Color.white.opacity(0.07),
+                            Color.black.opacity(0.12)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 0.6
+                )
+        )
+        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+        .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
     }
 }
 
@@ -364,6 +448,8 @@ struct GroupView: View {
                                     .foregroundColor(.secondary)
                             }
 
+                            // No group picture (removed per request)
+
                             HStack {
                                 Text("\(group.members.filter { $0.status == .active }.count) members")
                                     .foregroundColor(.secondary)
@@ -382,7 +468,24 @@ struct GroupView: View {
                         }
                         .padding()
                         .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.white.opacity(0.22),
+                                            Color.white.opacity(0.10),
+                                            Color.black.opacity(0.15)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 0.8
+                                )
+                        )
+                        .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
+                        .shadow(color: Color.white.opacity(0.05), radius: 1, x: 0, y: -1)
                         .padding(.horizontal)
                         .padding(.top)
                     }
@@ -402,7 +505,24 @@ struct GroupView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.blue)
-                        .cornerRadius(8)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.white.opacity(0.18),
+                                            Color.white.opacity(0.08),
+                                            Color.black.opacity(0.15)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 0.7
+                                )
+                        )
+                        .shadow(color: Color.black.opacity(0.14), radius: 8, x: 0, y: 5)
+                        .shadow(color: Color.white.opacity(0.05), radius: 0.5, x: 0, y: -0.5)
                         .padding(.horizontal)
                     }
                     
@@ -426,7 +546,24 @@ struct GroupView: View {
                             }
                             .padding()
                             .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.white.opacity(0.16),
+                                                Color.white.opacity(0.07),
+                                                Color.black.opacity(0.12)
+                                            ]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 0.6
+                                    )
+                            )
+                            .shadow(color: Color.black.opacity(0.09), radius: 6, x: 0, y: 3)
+                            .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
                             .padding(.horizontal)
                         }
                     }
@@ -1053,12 +1190,24 @@ struct LoginView: View {
                             .padding()
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .stroke(Color.white.opacity(0.06), lineWidth: 0.6)
+                            )
+                            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            .shadow(color: Color.white.opacity(0.02), radius: 0.5, x: 0, y: -0.5)
 
                         SecureField("Confirm Password", text: $confirmPassword)
                             .textContentType(.newPassword)
                             .padding()
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .stroke(Color.white.opacity(0.06), lineWidth: 0.6)
+                            )
+                            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            .shadow(color: Color.white.opacity(0.02), radius: 0.5, x: 0, y: -0.5)
 
                         if let error = authService.authError {
                             Text(error.localizedDescription)
@@ -1088,7 +1237,24 @@ struct LoginView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.blue)
-                                    .cornerRadius(8)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.18),
+                                                        Color.white.opacity(0.08),
+                                                        Color.black.opacity(0.15)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.7
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.14), radius: 8, x: 0, y: 5)
+                                    .shadow(color: Color.white.opacity(0.05), radius: 0.5, x: 0, y: -0.5)
                             } else {
                                 Text("Create Password")
                                     .fontWeight(.semibold)
@@ -1096,7 +1262,24 @@ struct LoginView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.blue)
-                                    .cornerRadius(8)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.18),
+                                                        Color.white.opacity(0.08),
+                                                        Color.black.opacity(0.15)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.7
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.14), radius: 8, x: 0, y: 5)
+                                    .shadow(color: Color.white.opacity(0.05), radius: 0.5, x: 0, y: -0.5)
                             }
                         }
                         .disabled(password.isEmpty || confirmPassword.isEmpty || isLoading)
@@ -1109,12 +1292,24 @@ struct LoginView: View {
                             .padding()
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .stroke(Color.white.opacity(0.06), lineWidth: 0.6)
+                            )
+                            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            .shadow(color: Color.white.opacity(0.02), radius: 0.5, x: 0, y: -0.5)
 
                         SecureField("Password", text: $password)
                             .textContentType(.password)
                             .padding()
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .stroke(Color.white.opacity(0.06), lineWidth: 0.6)
+                            )
+                            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            .shadow(color: Color.white.opacity(0.02), radius: 0.5, x: 0, y: -0.5)
 
                         if let error = authService.authError {
                             Text(error.localizedDescription)
@@ -1136,7 +1331,24 @@ struct LoginView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.blue)
-                                    .cornerRadius(8)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.18),
+                                                        Color.white.opacity(0.08),
+                                                        Color.black.opacity(0.15)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.7
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.14), radius: 8, x: 0, y: 5)
+                                    .shadow(color: Color.white.opacity(0.05), radius: 0.5, x: 0, y: -0.5)
                             } else {
                                 Text("Sign In")
                                     .fontWeight(.semibold)
@@ -1144,13 +1356,31 @@ struct LoginView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(Color.blue)
-                                    .cornerRadius(8)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.18),
+                                                        Color.white.opacity(0.08),
+                                                        Color.black.opacity(0.15)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.7
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.14), radius: 8, x: 0, y: 5)
+                                    .shadow(color: Color.white.opacity(0.05), radius: 0.5, x: 0, y: -0.5)
                             }
                         }
                         .disabled(email.isEmpty || password.isEmpty || isLoading)
                     }
                 }
                 .padding(.horizontal, 30)
+                .offset(y: -50)
                 
                 Spacer()
                 
