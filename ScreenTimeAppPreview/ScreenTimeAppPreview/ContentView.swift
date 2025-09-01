@@ -1449,6 +1449,11 @@ struct GroupDetailView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                .padding()
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .shadow(color: Color.black.opacity(0.10), radius: 10, x: 0, y: 6)
+                .shadow(color: Color.white.opacity(0.04), radius: 0.5, x: 0, y: -0.5)
                 .padding(.horizontal)
 
                 // Group Members Section
@@ -1470,6 +1475,23 @@ struct GroupDetailView: View {
                                     .padding(8)
                                     .background(Color.blue.opacity(0.1))
                                     .clipShape(Circle())
+                                    .overlay(
+                                        Circle()
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.20),
+                                                        Color.white.opacity(0.10),
+                                                        Color.black.opacity(0.14)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.8
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.10), radius: 6, x: 0, y: 4)
+                                    .shadow(color: Color.white.opacity(0.04), radius: 0.5, x: 0, y: -0.5)
                             }
                         }
                     }
@@ -1499,7 +1521,24 @@ struct GroupDetailView: View {
                                 }
                                 .padding()
                                 .background(Color(.systemGray6))
-                                .cornerRadius(12)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0.16),
+                                                    Color.white.opacity(0.08),
+                                                    Color.black.opacity(0.12)
+                                                ]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 0.7
+                                        )
+                                )
+                                .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
+                                .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
                                 .padding(.horizontal)
                             }
                         }
@@ -1524,6 +1563,11 @@ struct GroupDetailView: View {
                         }
                     }
                     .padding(.vertical, 8)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
+                    .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
+                    .padding(.horizontal)
                 }
 
                 Spacer()
@@ -1596,18 +1640,43 @@ struct AddMemberSheet: View {
                         .font(.title2)
                         .fontWeight(.semibold)
 
-                    HStack {
+                    HStack(spacing: 10) {
                         TextField("Enter username", text: $searchUsername)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
+                            .padding(12)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.white.opacity(0.16),
+                                                Color.white.opacity(0.08),
+                                                Color.black.opacity(0.12)
+                                            ]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 0.7
+                                    )
+                            )
+                            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 4)
+                            .shadow(color: Color.white.opacity(0.02), radius: 0.5, x: 0, y: -0.5)
 
                         Button(action: onSearch) {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.white)
-                                .padding(8)
+                                .padding(10)
                                 .background(Color.blue)
                                 .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white.opacity(0.15), lineWidth: 0.6)
+                                )
+                                .shadow(color: Color.black.opacity(0.10), radius: 6, x: 0, y: 4)
+                                .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
                         }
                         .disabled(searchUsername.isEmpty || isSearching)
                     }
@@ -1662,7 +1731,24 @@ struct AddMemberSheet: View {
                             }
                             .padding()
                             .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.white.opacity(0.16),
+                                                Color.white.opacity(0.08),
+                                                Color.black.opacity(0.12)
+                                            ]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 0.7
+                                    )
+                            )
+                            .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
+                            .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
                             .padding(.horizontal)
                         }
                     }
