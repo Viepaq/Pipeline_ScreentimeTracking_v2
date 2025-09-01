@@ -11,6 +11,7 @@
 		1A2B3C4D5E6F7A8B9C0D1E31 /* ScreenTimeAppPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A8B9C0D1E32 /* ScreenTimeAppPreviewApp.swift */; };
 		1A2B3C4D5E6F7A8B9C0D1E33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A8B9C0D1E34 /* Assets.xcassets */; };
 		1A2B3C4D5E6F7A8B9C0D1E35 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A8B9C0D1E36 /* Preview Assets.xcassets */; };
+ 		1A2B3C4D5E6F7A8B9C0D1E48 /* RequestExtensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7A8B9C0D1E47 /* RequestExtensionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		1A2B3C4D5E6F7A8B9C0D1E34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7A8B9C0D1E36 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7A8B9C0D1E37 /* ScreenTimeAppPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenTimeAppPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		1A2B3C4D5E6F7A8B9C0D1E47 /* RequestExtensionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestExtensionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,7 @@
 			children = (
 				1A2B3C4D5E6F7A8B9C0D1E32 /* ScreenTimeAppPreviewApp.swift */,
 				1A2B3C4D5E6F7A8B9C0D1E30 /* ContentView.swift */,
+ 				1A2B3C4D5E6F7A8B9C0D1E47 /* RequestExtensionView.swift */,
 				1A2B3C4D5E6F7A8B9C0D1E34 /* Assets.xcassets */,
 				1A2B3C4D5E6F7A8B9C0D1E3C /* Preview Content */,
 			);
@@ -139,6 +142,7 @@
 			files = (
 				1A2B3C4D5E6F7A8B9C0D1E2F /* ContentView.swift in Sources */,
 				1A2B3C4D5E6F7A8B9C0D1E31 /* ScreenTimeAppPreviewApp.swift in Sources */,
+ 				1A2B3C4D5E6F7A8B9C0D1E48 /* RequestExtensionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

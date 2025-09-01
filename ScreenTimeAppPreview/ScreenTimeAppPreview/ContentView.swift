@@ -634,118 +634,14 @@ struct GroupView: View {
             }
             .navigationTitle("Group")
             .sheet(isPresented: $showRequestExtension) {
-                // Inline RequestTimeExtensionView
                 NavigationView {
-                    Form {
-                        Section(header: Text("Select App")) {
-                            let appLimits = [
-                                ScreenTimeLimit(
-                                    appId: "com.instagram.ios",
-                                    appName: "Instagram",
-                                    iconName: "camera",
-                                    dailyLimitMinutes: 30,
-                                    userId: "user-1"
-                                ),
-                                ScreenTimeLimit(
-                                    appId: "com.tiktok.ios",
-                                    appName: "TikTok",
-                                    iconName: "play.rectangle",
-                                    dailyLimitMinutes: 45,
-                                    userId: "user-1"
-                                ),
-                                ScreenTimeLimit(
-                                    appId: "com.google.ios.youtube",
-                                    appName: "YouTube",
-                                    iconName: "play.tv",
-                                    dailyLimitMinutes: 60,
-                                    userId: "user-1"
-                                )
-                            ]
-                            
-                            ForEach(Array(appLimits.enumerated()), id: \.element.id) { index, app in
-                                Button(action: {
-                                    selectedAppIndex = index
-                                }) {
-                                    HStack {
-                                        Image(systemName: app.iconName)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 24, height: 24)
-                                            .foregroundColor(.blue)
-                                        
-                                        Text(app.appName)
-                                        
-                                        Spacer()
-                                        
-                                        if selectedAppIndex == index {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.blue)
-                                        }
-                                    }
-                                }
-                                .foregroundColor(.primary)
-                            }
-                        }
-                        
-                        Section(header: Text("Request Extra Time")) {
-                            Picker("Minutes", selection: $requestedMinutes) {
-                                Text("1 Minute").tag(1)
-                                Text("5 Minutes").tag(5)
-                                Text("15 Minutes").tag(15)
-                                Text("30 Minutes").tag(30)
-                            }
-                            .pickerStyle(MenuPickerStyle())
-                        }
-                        
-                        Section(header: Text("Reason (Required)")) {
-                            TextEditor(text: $requestReason)
-                                .frame(minHeight: 100)
-                        }
-                        
-                        Section {
-                            Button(action: {
-                                // Submit request
-                                // Create a mock request
-                                let appLimits = [
-                                    ScreenTimeLimit(
-                                        appId: "com.instagram.ios",
-                                        appName: "Instagram",
-                                        iconName: "camera",
-                                        dailyLimitMinutes: 30,
-                                        userId: "user-1"
-                                    ),
-                                    ScreenTimeLimit(
-                                        appId: "com.tiktok.ios",
-                                        appName: "TikTok",
-                                        iconName: "play.rectangle",
-                                        dailyLimitMinutes: 45,
-                                        userId: "user-1"
-                                    ),
-                                    ScreenTimeLimit(
-                                        appId: "com.google.ios.youtube",
-                                        appName: "YouTube",
-                                        iconName: "play.tv",
-                                        dailyLimitMinutes: 60,
-                                        userId: "user-1"
-                                    )
-                                ]
-                                
-                                let selectedApp = appLimits[selectedAppIndex]
-                                
-                                // In a real app, this would be saved to Supabase
-                                requestReason = ""
-                                showRequestExtension = false
-                            }) {
-                                Text("Submit Request")
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .disabled(requestReason.isEmpty)
-                        }
-                    }
-                    .navigationTitle("Request Extension")
-                    .navigationBarItems(leading: Button("Cancel") {
-                        showRequestExtension = false
-                    })
+                    RequestTimeExtensionView()
+                        .environmentObject(authService)
+                        .environmentObject(viewModel)
+                        .environmentObject(responseManager)
+                        .navigationBarItems(leading: Button("Cancel") {
+                            showRequestExtension = false
+                        })
                 }
             }
             .sheet(isPresented: $showPendingRequests) {

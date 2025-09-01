@@ -7,86 +7,81 @@ struct RequestTimeExtensionView: View {
     @EnvironmentObject var groupViewModel: MockGroupViewModel
     
     @State private var selectedApp: ScreenTimeLimit?
-    @State private var requestedMinutes = 15
+    @State private var requestedMinutes = 1
     @State private var reason = ""
     @State private var isSubmitting = false
     @State private var showSuccess = false
     
-    let minutesOptions = [5, 15, 30, 60, 120, 240, 420] // 5 min to 7 hours
+    let minutesOptions = [1, 5, 15, 30, 60, 120] // 5 min to 7 hours
     
     var body: some View {
-        NavigationView {
-            Form {
-                if showSuccess {
-                    SuccessView {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                } else {
-                    Section(header: Text("Select App")) {
-                        ForEach(homeViewModel.screenTimeLimits) { app in
-                            Button(action: {
-                                selectedApp = app
-                            }) {
-                                HStack {
-                                    Image(systemName: app.iconName)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 24, height: 24)
-                                        .foregroundColor(.blue)
-                                    
-                                    Text(app.appName)
-                                    
-                                    Spacer()
-                                    
-                                    if selectedApp?.id == app.id {
-                                        Image(systemName: "checkmark")
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                            }
-                            .foregroundColor(.primary)
-                        }
-                    }
-                    
-                    Section(header: Text("Request Extra Time")) {
-                        Picker("Minutes", selection: $requestedMinutes) {
-                            ForEach(minutesOptions, id: \.self) { minutes in
-                                if minutes < 60 {
-                                    Text("\(minutes) minutes")
-                                } else {
-                                    Text("\(minutes / 60) hour\(minutes / 60 > 1 ? "s" : "")")
-                                }
-                            }
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                    }
-                    
-                    Section(header: Text("Reason (Required)")) {
-                        TextEditor(text: $reason)
-                            .frame(minHeight: 100)
-                    }
-                    
-                    Section(footer: Text("Your request will be sent to all members of your accountability group. You'll receive a notification when it's approved or denied.")) {
+        Form {
+            if showSuccess {
+                SuccessView {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            } else {
+                Section(header: Text("Select App")) {
+                    ForEach(homeViewModel.screenTimeLimits) { app in
                         Button(action: {
-                            submitRequest()
+                            selectedApp = app
                         }) {
-                            if isSubmitting {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity)
-                            } else {
-                                Text("Submit Request")
-                                    .frame(maxWidth: .infinity)
+                            HStack {
+                                Image(systemName: app.iconName)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.blue)
+                                
+                                Text(app.appName)
+                                
+                                Spacer()
+                                
+                                if selectedApp?.id == app.id {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.blue)
+                                }
                             }
                         }
-                        .disabled(selectedApp == nil || reason.isEmpty || isSubmitting)
+                        .foregroundColor(.primary)
                     }
                 }
+                
+                Section(header: Text("Request Extra Time")) {
+                    Picker("Minutes", selection: $requestedMinutes) {
+                        ForEach(minutesOptions, id: \.self) { minutes in
+                            if minutes < 60 {
+                                Text("\(minutes) minutes")
+                            } else {
+                                Text("\(minutes / 60) hour\(minutes / 60 > 1 ? "s" : "")")
+                            }
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                }
+                
+                Section(header: Text("Reason (Required)")) {
+                    TextEditor(text: $reason)
+                        .frame(minHeight: 100)
+                }
+                
+                Section(footer: Text("Your request will be sent to all members of your accountability group. You'll receive a notification when it's approved or denied.")) {
+                    Button(action: {
+                        submitRequest()
+                    }) {
+                        if isSubmitting {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            Text("Submit Request")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .disabled(selectedApp == nil || reason.isEmpty || isSubmitting)
+                }
             }
-            .navigationTitle("Request Extension")
-            .navigationBarItems(leading: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
         }
+        .navigationTitle("Request Extension")
     }
     
     private func submitRequest() {
@@ -291,42 +286,4 @@ struct SuccessResponseView: View {
     }
 }
 
-// Extension Request model for preview app
-struct ExtensionRequest: Identifiable {
-    var id: String = UUID().uuidString
-    var appId: String
-    var appName: String
-    var requestedMinutes: Int
-    var reason: String
-    var userId: String
-    var groupId: String
-    var status: ExtensionStatus = .pending
-    var createdAt: Date = Date()
-    var updatedAt: Date = Date()
-    var responses: [ExtensionResponse] = []
-    
-    // Mock data for previews
-    static let mockRequest = ExtensionRequest(
-        appId: "com.instagram.ios",
-        appName: "Instagram",
-        requestedMinutes: 30,
-        reason: "Need to respond to important messages from my team about tomorrow's presentation.",
-        userId: "user-2",
-        groupId: "group-1"
-    )
-}
-
-struct ExtensionResponse: Identifiable {
-    var id: String = UUID().uuidString
-    var requestId: String
-    var userId: String
-    var approved: Bool
-    var comment: String?
-    var createdAt: Date = Date()
-}
-
-enum ExtensionStatus: String {
-    case pending
-    case approved
-    case denied
-}
+// Duplicate models removed — using definitions from ScreenTimeAppPreviewApp.swift
