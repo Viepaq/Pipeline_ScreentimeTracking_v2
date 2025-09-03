@@ -5,6 +5,7 @@ struct GroupListView: View {
     @EnvironmentObject var viewModel: GroupViewModel
     @State private var showCreateGroup = false
     @State private var showInvitations = false
+    @State private var showSettings = false
     
     init() {
         // View model is injected via environment object
@@ -78,8 +79,16 @@ struct GroupListView: View {
                         }
                     }
                     .navigationTitle("My Group")
+                    .navigationBarItems(trailing: Button("Edit") {
+                        showSettings = true
+                    })
                     .sheet(isPresented: $showInvitations) {
                         PendingInvitationsView(invitations: viewModel.pendingInvitations)
+                    }
+                    .sheet(isPresented: $showSettings) {
+                        GroupSettingsView()
+                            .environmentObject(authService)
+                            .environmentObject(viewModel)
                     }
                 } else {
                     // No group yet
