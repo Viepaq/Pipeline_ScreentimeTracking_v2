@@ -196,6 +196,7 @@ struct ProfilePicturePicker: View {
 struct GroupMemberProfileView: View {
     let member: GroupMember
     let size: CGFloat
+    var showBorder: Bool = true
 
     var body: some View {
         ZStack {
@@ -225,11 +226,13 @@ struct GroupMemberProfileView: View {
                 initialView
             }
         }
-        .overlay(
-            Circle()
-                .stroke(Color.white, lineWidth: 1.5)
-                .frame(width: size, height: size)
-        )
+        .overlay(alignment: .center) {
+            if showBorder {
+                Circle()
+                    .stroke(Color.white, lineWidth: 1.5)
+                    .frame(width: size, height: size)
+            }
+        }
         .shadow(color: Color.black.opacity(0.08), radius: 1, x: 0, y: 0.5)
     }
 

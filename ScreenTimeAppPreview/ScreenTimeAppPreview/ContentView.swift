@@ -401,6 +401,7 @@ struct AppLimitRow: View {
 }
 
 struct GroupView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: MockGroupViewModel
     @EnvironmentObject var authService: MockAuthService
     @EnvironmentObject var responseManager: ResponseManager
@@ -450,10 +451,22 @@ struct GroupView: View {
 
                             // No group picture (removed per request)
 
-                            HStack {
-                                Text("\(group.members.filter { $0.status == .active }.count) members")
-                                    .foregroundColor(.secondary)
-                                    .font(.subheadline)
+                            HStack(alignment: .center, spacing: 8) {
+                                HStack(spacing: 6) {
+                                    Text("\(group.members.filter { $0.status == .active }.count) members")
+                                        .foregroundColor(.secondary)
+                                        .font(.subheadline)
+
+                                    // Quick View avatars inline next to members
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: -6) {
+                                            ForEach(group.members.filter { $0.status == .active }.prefix(5)) { member in
+                                                GroupMemberProfileView(member: member, size: 18, showBorder: false)
+                                            }
+                                        }
+                                    }
+                                    .frame(height: 18)
+                                }
 
                                 Spacer()
 
@@ -635,7 +648,11 @@ struct GroupView: View {
             .navigationTitle("Group")
             .sheet(isPresented: $showRequestExtension) {
                 NavigationView {
-                    RequestTimeExtensionView()
+                    RequestTimeExtensionView(onDone: {
+                        // Dismiss sheet, then pop GroupView back to Home
+                        showRequestExtension = false
+                        dismiss()
+                    })
                         .environmentObject(authService)
                         .environmentObject(viewModel)
                         .environmentObject(responseManager)
@@ -1398,7 +1415,7 @@ struct GroupDetailView: View {
                         VStack(spacing: 12) {
                             ForEach(otherMembers) { member in
                                 HStack(spacing: 16) {
-                                    GroupMemberProfileView(member: member, size: 50)
+                                    GroupMemberProfileView(member: member, size: 50, showBorder: false)
 
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(member.displayName)
@@ -1441,30 +1458,7 @@ struct GroupDetailView: View {
                     }
                 }
 
-                // Alternative view with overlapping profile pictures
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Quick View")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal)
-
-                    HStack {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: -8) {
-                                ForEach(otherMembers) { member in
-                                    GroupMemberProfileView(member: member, size: 40)
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
-                    .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
-                    .padding(.horizontal)
-                }
+                
 
                 Spacer()
             }

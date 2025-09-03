@@ -2,9 +2,11 @@ import SwiftUI
 
 struct RequestTimeExtensionView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authService: MockAuthService
     @EnvironmentObject var homeViewModel: MockHomeViewModel
     @EnvironmentObject var groupViewModel: MockGroupViewModel
+    var onDone: (() -> Void)? = nil
     
     @State private var selectedApp: ScreenTimeLimit?
     @State private var requestedMinutes = 1
@@ -18,7 +20,11 @@ struct RequestTimeExtensionView: View {
         Form {
             if showSuccess {
                 SuccessView {
-                    presentationMode.wrappedValue.dismiss()
+                    if let onDone = onDone {
+                        onDone()
+                    } else {
+                        dismiss()
+                    }
                 }
             } else {
                 Section(header: Text("Select App")) {
@@ -77,13 +83,22 @@ struct RequestTimeExtensionView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     }
-                    .disabled(selectedApp == nil || reason.isEmpty || isSubmitting)
+                    .disabled(isSubmitDisabled)
                 }
             }
         }
         .navigationTitle("Request Extension")
+        .onAppear {
+            if selectedApp == nil {
+                selectedApp = homeViewModel.screenTimeLimits.first
+            }
+        }
     }
     
+    private var isSubmitDisabled: Bool {
+        selectedApp == nil || reason.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSubmitting
+    }
+
     private func submitRequest() {
         guard let app = selectedApp, !reason.isEmpty else { return }
         
@@ -104,7 +119,12 @@ struct RequestTimeExtensionView: View {
             // In a real app, this would be saved to Supabase
             
             isSubmitting = false
-            showSuccess = true
+            // Immediately return to Home (close sheet and pop GroupView)
+            if let onDone = onDone {
+                onDone()
+            } else {
+                dismiss()
+            }
         }
     }
 }
@@ -135,6 +155,7 @@ struct SuccessView: View {
             .padding(.top, 20)
         }
         .padding()
+        .padding(.top, 24)
         .frame(maxWidth: .infinity)
     }
 }
