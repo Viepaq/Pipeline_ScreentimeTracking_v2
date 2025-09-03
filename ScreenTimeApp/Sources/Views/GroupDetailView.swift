@@ -58,6 +58,27 @@ struct GroupDetailView: View {
                 }
             }
             
+            // Active members list with navigation
+            Section(header: Text("Members")) {
+                let activeMembers = group.members.filter { $0.status == .active }
+                ForEach(activeMembers) { member in
+                    NavigationLink(destination: MemberScreenTimeView(member: member)) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(member.username)
+                                    .font(.headline)
+                                Text(member.email)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+
             // Invite button (only for admin)
             if let userId = authService.currentUser?.id,
                viewModel.isUserAdmin(userId: userId) {
@@ -71,6 +92,16 @@ struct GroupDetailView: View {
             }
         }
         .navigationTitle("Group Details")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let userId = authService.currentUser?.id,
+                   viewModel.isUserAdmin(userId: userId) {
+                    NavigationLink(destination: GroupSettingsView(group: group)) {
+                        Text("Edit")
+                    }
+                }
+            }
+        }
         .sheet(isPresented: $showInviteSheet) {
             InviteMemberView()
                 .environmentObject(viewModel)

@@ -165,26 +165,15 @@ class GroupViewModel: ObservableObject {
             self.isLoading = false
         }
     }
-
-    func updateGroup(name: String, description: String?) async {
+    
+    func updateGroup(name: String, description: String?) {
+        guard var group = currentGroup else { return }
         DispatchQueue.main.async {
             self.isLoading = true
-            if var group = self.currentGroup {
-                group.name = name
-                group.description = description
-                group.updatedAt = Date()
-                self.currentGroup = group
-            }
-            self.isLoading = false
-        }
-    }
-
-    func deleteGroup() async {
-        DispatchQueue.main.async {
-            self.isLoading = true
-            // In a real app, this would delete the group in Supabase and notify members
-            self.currentGroup = nil
-            self.pendingInvitations = []
+            group.name = name
+            group.description = description
+            group.updatedAt = Date()
+            self.currentGroup = group
             self.isLoading = false
         }
     }

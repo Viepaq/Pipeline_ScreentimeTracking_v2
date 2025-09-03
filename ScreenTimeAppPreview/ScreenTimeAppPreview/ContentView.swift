@@ -1414,45 +1414,48 @@ struct GroupDetailView: View {
 
                         VStack(spacing: 12) {
                             ForEach(otherMembers) { member in
-                                HStack(spacing: 16) {
-                                    GroupMemberProfileView(member: member, size: 50, showBorder: false)
+                                NavigationLink(destination: MemberScreenTimeView(member: member)) {
+                                    HStack(spacing: 16) {
+                                        GroupMemberProfileView(member: member, size: 50, showBorder: false)
 
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(member.displayName)
-                                            .font(.headline)
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(member.displayName)
+                                                .font(.headline)
 
-                                        Text(member.email)
-                                            .font(.subheadline)
+                                            Text(member.email)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+
+                                        Spacer()
+
+                                        Image(systemName: "chevron.right")
                                             .foregroundColor(.secondary)
+                                            .font(.headline)
                                     }
-
-                                    Spacer()
-
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundColor(.green)
-                                        .font(.title3)
+                                    .padding()
+                                    .background(Color(.systemGray6))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .stroke(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.16),
+                                                        Color.white.opacity(0.08),
+                                                        Color.black.opacity(0.12)
+                                                    ]),
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 0.7
+                                            )
+                                    )
+                                    .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
+                                    .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
+                                    .padding(.horizontal)
                                 }
-                                .padding()
-                                .background(Color(.systemGray6))
-                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .stroke(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [
-                                                    Color.white.opacity(0.16),
-                                                    Color.white.opacity(0.08),
-                                                    Color.black.opacity(0.12)
-                                                ]),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 0.7
-                                        )
-                                )
-                                .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 5)
-                                .shadow(color: Color.white.opacity(0.03), radius: 0.5, x: 0, y: -0.5)
-                                .padding(.horizontal)
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                     }
@@ -1465,6 +1468,15 @@ struct GroupDetailView: View {
             .padding(.top)
         }
         .navigationTitle("Group Details")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if isCurrentUserAdmin {
+                    NavigationLink(destination: GroupSettingsView(group: group)) {
+                        Text("Edit")
+                    }
+                }
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddMemberSheet) {
             AddMemberSheet(
@@ -1671,6 +1683,112 @@ struct AddMemberSheet: View {
             })
             .padding(.top)
         }
+    }
+}
+
+struct GroupSettingsView: View {
+    @EnvironmentObject var authService: MockAuthService
+    @EnvironmentObject var viewModel: MockGroupViewModel
+    let group: Group
+    @State private var name: String
+    @State private var description: String
+    @State private var isSaving = false
+
+    init(group: Group) {
+        self.group = group
+        _name = State(initialValue: group.name)
+        _description = State(initialValue: group.description ?? "")
+    }
+
+    var body: some View {
+        Form {
+            Section(header: Text("Group Info")) {
+                TextField("Name", text: $name)
+                TextField("Description", text: $description)
+            }
+
+            Section(footer: Text("Only admins can edit")) {
+                Button(action: save) {
+                    if isSaving {
+                        ProgressView().frame(maxWidth: .infinity)
+                    } else {
+                        Text("Save").frame(maxWidth: .infinity)
+                    }
+                }
+                .disabled(!canEdit || name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSaving)
+            }
+
+            Section {
+                Button(role: .destructive) {
+                    // For preview: clear current group
+                    viewModel.currentGroup = nil
+                } label: {
+                    Text("Leave Group").frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .navigationTitle("Group Settings")
+    }
+
+    private var canEdit: Bool {
+        guard let uid = authService.currentUser?.id else { return false }
+        return group.adminUserId == uid
+    }
+
+    private func save() {
+        guard canEdit else { return }
+        isSaving = true
+        if var current = viewModel.currentGroup, current.id == group.id {
+            current.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            current.description = description.isEmpty ? nil : description
+            current.updatedAt = Date()
+            viewModel.currentGroup = current
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { isSaving = false }
+    }
+}
+
+// Member ScreenTime View (Preview)
+struct MemberScreenTimeView: View {
+    let member: GroupMember
+
+    // Local mock data for preview target
+    private var items: [(appName: String, iconName: String, limit: Int, used: Int)] {
+        [
+            ("Instagram", "camera", 30, 15),
+            ("TikTok", "play.rectangle", 45, 25),
+            ("YouTube", "play.tv", 60, 40)
+        ]
+    }
+
+    var body: some View {
+        List {
+            Section(header: Text("Blocked Apps & Limits")) {
+                ForEach(items, id: \.appName) { item in
+                    HStack(spacing: 12) {
+                        Image(systemName: item.iconName)
+                            .frame(width: 28)
+                            .foregroundColor(.blue)
+
+                        VStack(alignment: .leading) {
+                            Text(item.appName)
+                                .font(.headline)
+                            Text("Daily limit: \(item.limit) min")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Text("\(item.used) min used")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+        }
+        .navigationTitle(member.displayName)
     }
 }
 
